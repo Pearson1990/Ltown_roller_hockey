@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Leonardtown Roller Hockey</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
@@ -15,6 +21,8 @@
   --bg:#0c141e; --surface:#142030; --ink:#e8eef5; --ink2:#a9b8c8; --muted:#74869a;
   --line:#243448; --accent:#ff8438; --accent-ink:#0c141e; --blue:#6aa7ee; --win:#4cc38a; --loss:#f0786b; --row:#1a2a3d; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);margin:0;padding-inline:16px}
 a{color:inherit}
 .wrap{max-width:1080px;margin-inline:auto;padding-block:0 48px}
@@ -139,6 +147,8 @@ input[type=search]{flex:1 1 180px}
 }
 @media (prefers-reduced-motion:no-preference){.sheet{animation:sl .18s ease-out}@keyframes sl{from{transform:translateX(24px);opacity:0}}@media (max-width:640px){.sheet{animation:up .2s ease-out}@keyframes up{from{transform:translateY(24px);opacity:0}}}}
 </style>
+</head>
+<body>
 
 <div class="wrap">
 <header>
@@ -371,3 +381,5 @@ $('#theme').onclick=()=>{const r=document.documentElement,dark=matchMedia('(pref
 $('#asof').textContent='Stats through '+(()=>{const d=new Date(D.asof+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})})()+' · data from the league spreadsheet';
 addEventListener('hashchange',route);route();
 </script>
+</body>
+</html>

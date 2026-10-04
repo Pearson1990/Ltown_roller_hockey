@@ -248,15 +248,19 @@ const pages={
   const sel=sessionStorageGet('sched')||'all';
   const ws=weeks.filter(w=>sel==='all'||gamesOf(w).some(g=>g.home===sel||g.away===sel)||D.byes[w]===sel);
   const opts=`<option value="all">All teams</option>`+TEAMS.map(t=>`<option value="${t}" ${t===sel?'selected':''}>${esc(tn(t))}</option>`).join('');
-  const blocks=ws.map(w=>{
+  const block=w=>{
     if(sel==='all')return weekBlock(w);
     const gs=gamesOf(w).filter(g=>g.home===sel||g.away===sel);
     const d=gamesOf(w)[0].date;
     return `<section class="panel"><div class="weekh"><h3 style="color:var(--ink)">Week ${w} &middot; ${esc(dateShort(d))}</h3>${w===nextWeek?'<span class="chip next">Up next</span>':''}</div>${gs.map(g=>gameRow(g)).join('')||`<div class="bye">Bye week</div>`}</section>`;
-  }).join('');
+  };
+  const isDone=w=>gamesOf(w).every(played);
+  const up=ws.filter(w=>!isDone(w)),done=ws.filter(isDone).reverse();
+  const blocks=(up.length?`<h3 style="color:var(--ink)">Upcoming</h3><div class="grid">${up.map(block).join('')}</div>`:'')+
+    (done.length?`<h3 style="color:var(--ink)">Results</h3><div class="grid">${done.map(block).join('')}</div>`:'');
   return `<div class="pagehead"><div><h2>Schedule &amp; results</h2><div class="sub">First team listed is home (white jerseys). Weeks without games are posted as the league announces them.</div></div>
   <div class="controls"><label class="sub" for="tsel">Team</label><select id="tsel">${opts}</select></div></div>
-  <div class="grid">${blocks}</div>`;
+  ${blocks}`;
  },
  standings(){
   return `<div class="pagehead"><div><h2>Standings</h2><div class="sub">2 points for a win, 1 for a tie or OTL. Ranked by points, then goal differential, then goals for. Click a team for its page.</div></div></div>

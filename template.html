@@ -1,0 +1,349 @@
+<title>Leonardtown Roller Hockey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout: sticky rink-board header with page tabs; content in one 1080px column; tables scroll inside their own wrappers. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --ink:#0f1b2a; --ink2:#44566b; --muted:#7a8a9c;
+  --line:#d9e0e7; --accent:#e4570f; --accent-ink:#ffffff; --blue:#2563a8; --win:#1b7f4b; --loss:#b3382c; --row:#eef2f6;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif; --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c141e; --surface:#142030; --ink:#e8eef5; --ink2:#a9b8c8; --muted:#74869a;
+  --line:#243448; --accent:#ff8438; --accent-ink:#0c141e; --blue:#6aa7ee; --win:#4cc38a; --loss:#f0786b; --row:#1a2a3d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c141e; --surface:#142030; --ink:#e8eef5; --ink2:#a9b8c8; --muted:#74869a;
+  --line:#243448; --accent:#ff8438; --accent-ink:#0c141e; --blue:#6aa7ee; --win:#4cc38a; --loss:#f0786b; --row:#1a2a3d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);margin:0;padding-inline:16px}
+a{color:inherit}
+.wrap{max-width:1080px;margin-inline:auto;padding-block:0 48px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:-16px;padding:14px 16px 0;border-bottom:2px solid var(--ink)}
+.brand{max-width:1080px;margin-inline:auto;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font:700 28px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;margin:0}
+.brand span{font:500 13px var(--body);color:var(--muted)}
+nav{max-width:1080px;margin-inline:auto;display:flex;gap:2px;overflow-x:auto;padding-top:10px;scrollbar-width:none}
+nav a{font:600 16px var(--display);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:9px 14px;color:var(--ink2);border-bottom:4px solid transparent;white-space:nowrap;margin-bottom:-2px}
+nav a:hover{color:var(--ink)}
+nav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-top:24px;display:flex;flex-direction:column;gap:28px}
+h2{font:700 26px/1.1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
+h3{font:600 19px/1.1 var(--display);text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--ink2)}
+.pagehead{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.sub{color:var(--muted);font-size:13px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.panel{background:var(--surface);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.tw{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+.panel .tw{border:0}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{font:600 13px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0}
+th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+th button:hover{color:var(--ink)}
+th[aria-sort] {color:var(--ink)}
+tbody tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--row)}
+td.rk{color:var(--muted);width:36px}
+td.pts{font-weight:600}
+.tm{font-weight:600}
+.link{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.link:hover{text-decoration-color:var(--accent)}
+.game{display:grid;grid-template-columns:70px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.game:last-child{border-bottom:0}
+.time{font:600 17px var(--display);letter-spacing:.04em;color:var(--ink2)}
+.teams{display:flex;flex-direction:column;gap:3px;min-width:0}
+.side{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.side .n{font-weight:500}
+.side .s{font:700 22px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--muted)}
+.side.w .n{font-weight:700}.side.w .s{color:var(--ink)}
+.jersey{font-size:11px;color:var(--muted);margin-left:6px;font-weight:400}
+.refs{font-size:12px;color:var(--muted);text-align:right;max-width:130px}
+.weekh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.chip{font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line);color:var(--ink2)}
+.chip.next{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bye{font-size:13px;color:var(--muted);padding-top:8px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+select,input[type=search]{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:8px 10px;min-width:0}
+input[type=search]{flex:1 1 180px}
+.seg{display:inline-flex;border:1px solid var(--line)}
+.seg button{font:600 14px var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--ink2);border:0;padding:8px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.bar{display:flex;height:10px;gap:2px;min-width:2px}
+.bar i{display:block;height:100%;min-width:2px}
+.bar .g{background:var(--accent)}.bar .a{background:var(--blue)}
+.leader{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 0}
+.leader .nm{display:flex;flex-direction:column;gap:5px;min-width:0}
+.leader .nm b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leader .nm small{color:var(--muted);font-size:12px;font-weight:400}
+.leader .v{font:700 22px var(--display);font-variant-numeric:tabular-nums}
+.leader .r{color:var(--muted);font:600 14px var(--display)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;background:var(--accent)}
+.legend span.a::before{background:var(--blue)}
+.gd{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.gdbar{width:80px;height:8px;position:relative;background:transparent}
+.gdbar i{position:absolute;top:0;height:100%}
+.gdbar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line)}
+.pos{color:var(--win)}.neg{color:var(--loss)}
+.form{display:inline-flex;gap:3px}.form i{width:18px;height:18px;display:grid;place-items:center;font:700 11px var(--display);font-style:normal;color:#fff}
+.form .W{background:var(--win)}.form .L{background:var(--loss)}.form .T{background:var(--muted)}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:6px;text-decoration:none;min-width:0}
+.card:hover{border-color:var(--ink)}
+.card .nm{font:700 24px/1 var(--display);text-transform:uppercase}
+.card .rec{font:600 15px var(--body);color:var(--ink2);font-variant-numeric:tabular-nums}
+.card .gl{font-size:12px;color:var(--muted)}
+.stat{display:flex;gap:24px;flex-wrap:wrap}
+.stat div{display:flex;flex-direction:column}
+.stat b{font:700 34px/1 var(--display);font-variant-numeric:tabular-nums}
+.stat small{font:600 12px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.drawer{position:fixed;inset:0;z-index:20;background:rgba(5,10,16,.55);display:flex;justify-content:flex-end}
+.drawer[hidden]{display:none}
+.sheet{background:var(--bg);width:min(460px,100%);height:100%;overflow-y:auto;padding:20px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;border-left:2px solid var(--ink)}
+.sheet .x{align-self:flex-end;font:600 14px var(--display);letter-spacing:.08em;text-transform:uppercase;background:none;color:var(--ink);border:1px solid var(--line);padding:6px 12px;cursor:pointer}
+.note{font-size:13px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);padding:10px 12px}
+.foot{color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--line)}
+.theme{all:unset;cursor:pointer;font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.theme:hover{color:var(--ink)}
+.empty{color:var(--muted);padding:16px;text-align:center}
+@media (max-width:560px){
+  .game{grid-template-columns:56px 1fr}.refs{grid-column:2;text-align:left;max-width:none}
+  th,td{padding:8px}
+  .brand h1{font-size:24px}
+}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:sl .18s ease-out}@keyframes sl{from{transform:translateX(24px);opacity:0}}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="brand"><h1>Leonardtown Roller Hockey</h1><span>Adult league &middot; Winter 2026&ndash;27 &middot; St. Mary's County Rec &amp; Parks</span></div>
+  <nav id="nav" aria-label="Pages"></nav>
+</header>
+<main id="app"></main>
+<div class="foot"><span id="asof"></span><button class="theme" id="theme" type="button">Toggle theme</button></div>
+</div>
+<div class="drawer" id="drawer" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Player detail"></div></div>
+
+<script>
+const D=/*DATA*/null;
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TEAMS=Object.keys(D.teams).sort();
+const tn=t=>t+"’s";
+const slug=t=>t.toLowerCase();
+const unslug=s=>TEAMS.find(t=>slug(t)===s);
+const fmtTime=t=>{if(!t)return'';const h=+t.slice(0,2),m=t.slice(3);return `${h%12||12}:${m} PM`};
+const dateShort=s=>s?s.replace(/^\w+\.,\s*/,'').replace(/, \d{4}$/,''):'TBD';
+const dow=s=>s?s.split('.')[0]:'';
+const played=g=>g.hs!=null&&g.as_!=null;
+const weeks=[...new Set(D.games.map(g=>g.week))].sort((a,b)=>a-b);
+const nextWeek=weeks.find(w=>D.games.some(g=>g.week===w&&!played(g)));
+const lastWeek=[...weeks].reverse().find(w=>D.games.some(g=>g.week===w&&played(g)));
+const gamesOf=w=>D.games.filter(g=>g.week===w);
+
+// standings computed from results
+function standings(){
+  const S={};TEAMS.forEach(t=>S[t]={t,gp:0,w:0,l:0,tie:0,gf:0,ga:0,form:[]});
+  D.games.filter(played).forEach(g=>{
+    [[g.home,g.hs,g.as_],[g.away,g.as_,g.hs]].forEach(([t,f,a])=>{
+      const s=S[t];s.gp++;s.gf+=f;s.ga+=a;
+      const r=f>a?'W':f<a?'L':'T';
+      s[r==='W'?'w':r==='L'?'l':'tie']++;s.form.push(r);
+    });
+  });
+  const rows=Object.values(S);
+  rows.forEach(s=>{s.gd=s.gf-s.ga;s.pts=s.w*2+s.tie;s.pct=s.gp?s.w/s.gp:null});
+  rows.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.t.localeCompare(b.t));
+  rows.forEach((s,i)=>s.rank=i+1);
+  return rows;
+}
+const ST=standings();
+const stOf=t=>ST.find(s=>s.t===t);
+const ppg=p=>p.gp?(p.pts/p.gp):null;
+const f2=v=>v==null?'–':v.toFixed(2);
+const at=Object.fromEntries(D.alltime.map(a=>[a.name,a]));
+
+function teamLink(t){return `<a class="link" href="#team-${slug(t)}">${esc(tn(t))}</a>`}
+function gameRow(g,showDate){
+  const pl=played(g),hw=pl&&g.hs>g.as_,aw=pl&&g.as_>g.hs;
+  return `<div class="game"><div class="time">${showDate?esc(dateShort(g.date))+'<br>':''}${fmtTime(g.time)}</div>
+  <div class="teams"><div class="side ${hw?'w':''}"><span class="n">${teamLink(g.home)}<span class="jersey">home &middot; white</span></span><span class="s">${pl?g.hs:'–'}</span></div>
+  <div class="side ${aw?'w':''}"><span class="n">${teamLink(g.away)}</span><span class="s">${pl?g.as_:'–'}</span></div></div>
+  <div class="refs">${g.refs?'Refs: '+esc(g.refs):''}</div></div>`;
+}
+function weekBlock(w,opts={}){
+  const gs=gamesOf(w);if(!gs.length)return'';
+  const d=gs[0].date,bye=D.byes[w];
+  const tag=w===nextWeek?'<span class="chip next">Up next</span>':gs.every(played)?'<span class="chip">Final</span>':'';
+  return `<section class="panel"><div class="weekh"><h3 style="color:var(--ink)">Week ${w} &middot; ${esc(dow(d))} ${esc(dateShort(d))}</h3>${tag}</div>
+  ${gs.map(g=>gameRow(g)).join('')}${bye?`<div class="bye">Bye: ${esc(tn(bye))}</div>`:''}</section>`;
+}
+function standTable(rows,compact){
+  const max=Math.max(1,...ST.map(s=>Math.abs(s.gd)));
+  return `<div class="tw"><table><thead><tr><th>#</th><th class="l">Team</th><th>GP</th><th>W</th><th>L</th><th>T/OTL</th>${compact?'':'<th>GF</th><th>GA</th>'}<th>GD</th>${compact?'':'<th>Win %</th><th>Form</th>'}<th>Pts</th></tr></thead><tbody>
+  ${rows.map(s=>`<tr class="click" tabindex="0" data-go="team-${slug(s.t)}"><td class="rk">${s.rank}</td><td class="l tm">${esc(tn(s.t))}</td><td>${s.gp}</td><td>${s.w}</td><td>${s.l}</td><td>${s.tie}</td>
+  ${compact?'':`<td>${s.gf}</td><td>${s.ga}</td>`}
+  <td><div class="gd"><span class="${s.gd>0?'pos':s.gd<0?'neg':''}">${s.gd>0?'+':''}${s.gd}</span>${compact?'':`<span class="gdbar"><i style="${s.gd>=0?'left:50%':'right:50%'};width:${Math.abs(s.gd)/max*50}%;background:${s.gd>=0?'var(--win)':'var(--loss)'}"></i></span>`}</div></td>
+  ${compact?'':`<td>${s.pct==null?'–':s.pct.toFixed(3).replace(/^0/,'')}</td><td><span class="form">${s.form.map(r=>`<i class="${r}">${r}</i>`).join('')||'–'}</span></td>`}
+  <td class="pts">${s.pts}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function leaders(key,label,n=5){
+  const list=[...D.players].sort((a,b)=>b[key]-a[key]||b.pts-a.pts||a.name.localeCompare(b.name)).slice(0,n);
+  return list.map((p,i)=>`<div class="leader click" data-player="${esc(p.name)}|${esc(p.team)}" style="cursor:pointer"><span class="r">${i+1}</span><span class="nm"><b>${esc(p.name)}</b><small>${esc(tn(p.team))} &middot; ${p.g} G &middot; ${p.a} A</small></span><span class="v">${p[key]}</span></div>`).join('');
+}
+function scoringBars(n=8){
+  const list=[...D.players].sort((a,b)=>b.pts-a.pts||b.g-a.g||a.name.localeCompare(b.name)).slice(0,n);
+  const max=Math.max(1,...list.map(p=>p.pts));
+  return `<div class="legend"><span>Goals</span><span class="a">Assists</span></div>`+list.map((p,i)=>`<div class="leader" data-player="${esc(p.name)}|${esc(p.team)}" style="cursor:pointer;grid-template-columns:22px 1fr auto"><span class="r">${i+1}</span><span class="nm"><b>${esc(p.name)}</b><span class="bar" style="width:${Math.max(p.pts/max*100,3)}%"><i class="g" style="flex:${p.g}"></i><i class="a" style="flex:${p.a}"></i></span><small>${esc(tn(p.team))} &middot; ${p.g} G &middot; ${p.a} A</small></span><span class="v">${p.pts}</span></div>`).join('');
+}
+
+/* ---------- pages ---------- */
+const pages={
+ home(){
+  const nw=nextWeek,lw=lastWeek,t=D.players.reduce((s,p)=>s+p.g,0);
+  const totalGames=D.games.filter(played).length,goals=D.games.filter(played).reduce((s,g)=>s+g.hs+g.as_,0);
+  return `<div class="pagehead"><div><h2>Game night</h2><div class="sub">Wednesdays at Leonardtown &middot; four games a week, nine teams</div></div></div>
+  <div class="stat"><div><b>${lw||0}</b><small>Weeks played</small></div><div><b>${totalGames}</b><small>Games</small></div><div><b>${goals}</b><small>Goals</small></div><div><b>${totalGames?(goals/totalGames).toFixed(1):'–'}</b><small>Goals / game</small></div></div>
+  <div class="grid">${nw?weekBlock(nw):''}${lw?weekBlock(lw):''}</div>
+  <div class="grid"><section class="panel"><div class="weekh"><h3 style="color:var(--ink)">Standings</h3><a class="link sub" href="#standings">Full table</a></div>${standTable(ST,true)}</section>
+  <section class="panel"><div class="weekh"><h3 style="color:var(--ink)">Scoring leaders</h3><a class="link sub" href="#players">All players</a></div>${scoringBars(6)}</section></div>`;
+ },
+ schedule(){
+  const sel=sessionStorageGet('sched')||'all';
+  const ws=weeks.filter(w=>sel==='all'||gamesOf(w).some(g=>g.home===sel||g.away===sel)||D.byes[w]===sel);
+  const opts=`<option value="all">All teams</option>`+TEAMS.map(t=>`<option value="${t}" ${t===sel?'selected':''}>${esc(tn(t))}</option>`).join('');
+  const blocks=ws.map(w=>{
+    if(sel==='all')return weekBlock(w);
+    const gs=gamesOf(w).filter(g=>g.home===sel||g.away===sel);
+    const d=gamesOf(w)[0].date;
+    return `<section class="panel"><div class="weekh"><h3 style="color:var(--ink)">Week ${w} &middot; ${esc(dateShort(d))}</h3>${w===nextWeek?'<span class="chip next">Up next</span>':''}</div>${gs.map(g=>gameRow(g)).join('')||`<div class="bye">Bye week</div>`}</section>`;
+  }).join('');
+  return `<div class="pagehead"><div><h2>Schedule &amp; results</h2><div class="sub">First team listed is home (white jerseys). Weeks without games are posted as the league announces them.</div></div>
+  <div class="controls"><label class="sub" for="tsel">Team</label><select id="tsel">${opts}</select></div></div>
+  <div class="grid">${blocks}</div>`;
+ },
+ standings(){
+  return `<div class="pagehead"><div><h2>Standings</h2><div class="sub">2 points for a win, 1 for a tie or OTL. Ranked by points, then goal differential, then goals for. Click a team for its page.</div></div></div>
+  ${standTable(ST,false)}
+  <div class="sub">GP games played &middot; T/OTL ties and overtime losses &middot; GF/GA goals for/against &middot; GD goal differential</div>`;
+ },
+ players(){
+  return `<div class="pagehead"><div><h2>Player stats</h2><div class="sub">Season totals. Click a player for the game log and career line.</div></div>
+  <div class="seg" role="group" aria-label="Position"><button type="button" data-pos="skaters" aria-pressed="${view.pos==='skaters'}">Skaters</button><button type="button" data-pos="goalies" aria-pressed="${view.pos==='goalies'}">Goalies</button></div></div>
+  <div class="controls"><input type="search" id="q" placeholder="Search players" value="${esc(view.q)}" aria-label="Search players"><select id="tf" aria-label="Team"><option value="all">All teams</option>${TEAMS.map(t=>`<option value="${t}" ${t===view.team?'selected':''}>${esc(tn(t))}</option>`).join('')}</select></div>
+  <div id="ptable"></div>`;
+ },
+ teams(){
+  return `<div class="pagehead"><div><h2>Teams</h2><div class="sub">Rosters, results and stats for each team.</div></div></div>
+  <div class="cards">${ST.map(s=>{const lead=D.players.filter(p=>p.team===s.t).sort((a,b)=>b.pts-a.pts)[0];
+   return `<a class="card" href="#team-${slug(s.t)}"><span class="nm">${esc(tn(s.t))}</span><span class="rec">${s.w}-${s.l}${s.tie?'-'+s.tie:''} &middot; ${s.pts} pts &middot; #${s.rank}</span><span class="gl">${s.gf} GF &middot; ${s.ga} GA</span>${lead&&lead.pts?`<span class="gl">Leader: ${esc(lead.name)} (${lead.pts} pts)</span>`:''}</a>`}).join('')}</div>`;
+ },
+ team(t){
+  const s=stOf(t),roster=D.players.filter(p=>p.team===t).sort((a,b)=>b.pts-a.pts||b.g-a.g||a.name.localeCompare(b.name));
+  const gl=D.goalies.filter(g=>g.team===t&&g.name!=='Sub');
+  const gs=D.games.filter(g=>g.home===t||g.away===t);
+  const mine=gs.map(g=>{const home=g.home===t,pl=played(g),f=home?g.hs:g.as_,a=home?g.as_:g.hs;
+    return `<div class="game"><div class="time">Wk ${g.week}<br><span style="font-size:13px">${esc(dateShort(g.date))}</span></div><div class="teams"><div class="side"><span class="n">${home?'vs.':'at'} ${teamLink(home?g.away:g.home)}</span><span class="s" style="color:var(--ink)">${pl?`${f}–${a}`:fmtTime(g.time)}</span></div></div><div class="refs">${pl?`<span class="chip" style="color:var(--${f>a?'win':f<a?'loss':'muted'})">${f>a?'Win':f<a?'Loss':'Tie'}</span>`:''}</div></div>`}).join('');
+  const byes=Object.entries(D.byes).filter(([w,b])=>b===t).map(([w])=>`<div class="bye">Bye in Week ${w}</div>`).join('');
+  return `<div class="pagehead"><div><div class="sub"><a class="link" href="#teams">&larr; All teams</a></div><h2>${esc(tn(t))} Team</h2></div></div>
+  <div class="stat"><div><b>${s.rank}</b><small>Rank</small></div><div><b>${s.w}-${s.l}${s.tie?'-'+s.tie:''}</b><small>Record</small></div><div><b>${s.pts}</b><small>Points</small></div><div><b>${s.gf}</b><small>Goals for</small></div><div><b>${s.ga}</b><small>Goals against</small></div></div>
+  <div class="grid"><section class="panel"><h3>Roster</h3><div class="tw"><table><thead><tr><th class="l">Player</th><th>GP</th><th>G</th><th>A</th><th>Pts</th><th>PIM</th></tr></thead><tbody>
+  ${roster.map(p=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="l">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${p.pim}</td></tr>`).join('')}
+  ${gl.map(g=>`<tr><td class="l">${esc(g.name)} <span class="jersey">G</span></td><td>${g.gp}</td><td colspan="2" class="sub">${g.w}-${g.l}${g.t?'-'+g.t:''}</td><td colspan="2" class="sub">${g.gp?(g.ga/g.gp).toFixed(2)+' GAA':'–'}</td></tr>`).join('')}
+  </tbody></table></div></section>
+  <section class="panel"><h3>Schedule &amp; results</h3>${mine}${byes}</section></div>`;
+ },
+ alltime(){
+  return `<div class="pagehead"><div><h2>All-time stats</h2><div class="sub">Career totals across every season in the league archive (${D.alltime.length} players).</div></div></div>
+  <div class="controls"><input type="search" id="q" placeholder="Search players" value="${esc(view.q)}" aria-label="Search all-time players"></div><div id="atable"></div>`;
+ }
+};
+
+/* ---------- sortable tables ---------- */
+const view={pos:'skaters',q:'',team:'all',sort:{players:['pts',-1],goalies:['gaa',1],alltime:['pts',-1]}};
+function sortable(id,cols,rows,key,rowFn,limit){
+  const [k,dir]=view.sort[key];
+  const c=cols.find(c=>c.k===k)||cols[0];
+  const sorted=[...rows].sort((a,b)=>{const x=c.v(a),y=c.v(b);
+    if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
+    return (typeof x==='string'?x.localeCompare(y):x-y)*dir||(b.pts||0)-(a.pts||0)||String(a.name).localeCompare(b.name)});
+  const shown=limit?sorted.slice(0,limit):sorted;
+  $(id).innerHTML=rows.length?`<div class="tw"><table><thead><tr><th>#</th>${cols.map(c=>`<th class="${c.l?'l':''}" ${c.k===k?`aria-sort="${dir>0?'ascending':'descending'}"`:''}><button type="button" data-sort="${c.k}">${c.n}${c.k===k?(dir>0?' ▲':' ▼'):''}</button></th>`).join('')}</tr></thead><tbody>
+  ${shown.map((r,i)=>rowFn(r,i+1)).join('')}</tbody></table></div>${limit&&sorted.length>limit?`<div class="sub">Showing top ${limit} of ${sorted.length}. Search to find anyone.</div>`:''}`:`<div class="empty">No players match.</div>`;
+  $(id).onclick=e=>{const b=e.target.closest('[data-sort]');if(b){const nk=b.dataset.sort,cur=view.sort[key];
+      view.sort[key]=[nk,cur[0]===nk?-cur[1]:(cols.find(c=>c.k===nk).l||nk==='gaa'||nk==='ga'||nk==='l'?1:-1)];sortable(id,cols,rows,key,rowFn,limit);return}
+    const r=e.target.closest('[data-player]');if(r)openPlayer(r.dataset.player)};
+  $(id).onkeydown=e=>{if(e.key==='Enter'){const r=e.target.closest('[data-player]');if(r)openPlayer(r.dataset.player)}};
+}
+function renderPlayers(){
+  const q=view.q.toLowerCase();
+  if(view.pos==='skaters'){
+    const rows=D.players.filter(p=>(view.team==='all'||p.team===view.team)&&p.name.toLowerCase().includes(q));
+    const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'team',n:'Team',l:1,v:p=>p.team},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',v:ppg},{k:'pim',n:'PIM',v:p=>p.pim}];
+    sortable('#ptable',cols,rows,'players',(p,i)=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="rk">${i}</td><td class="l tm">${esc(p.name)}</td><td class="l">${esc(tn(p.team))}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${f2(ppg(p))}</td><td>${p.pim}</td></tr>`);
+  }else{
+    const rows=D.goalies.filter(g=>(view.team==='all'||g.team===view.team)&&g.name.toLowerCase().includes(q)).map(g=>({...g,gaa:g.gp?g.ga/g.gp:null,pct:g.gp?g.w/g.gp:null}));
+    const cols=[{k:'name',n:'Goalie',l:1,v:g=>g.name},{k:'team',n:'Team',l:1,v:g=>g.team},{k:'gp',n:'GP',v:g=>g.gp},{k:'w',n:'W',v:g=>g.w},{k:'l',n:'L',v:g=>g.l},{k:'t',n:'T/OTL',v:g=>g.t},{k:'ga',n:'GA',v:g=>g.ga},{k:'gaa',n:'GAA',v:g=>g.gaa}];
+    sortable('#ptable',cols,rows,'goalies',(g,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(g.name)}</td><td class="l">${esc(tn(g.team))}</td><td>${g.gp}</td><td>${g.w}</td><td>${g.l}</td><td>${g.t}</td><td>${g.ga}</td><td class="pts">${f2(g.gaa)}</td></tr>`);
+    $('#ptable').insertAdjacentHTML('beforeend','<div class="sub" style="margin-top:8px">Empty-net goals do not count against a goalie’s GAA.</div>');
+  }
+}
+function renderAlltime(){
+  const q=view.q.toLowerCase(),rows=D.alltime.filter(p=>p.name.toLowerCase().includes(q));
+  const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',v:p=>p.gp?p.pts/p.gp:null},{k:'pim',n:'PIM',v:p=>p.pim}];
+  sortable('#atable',cols,rows,'alltime',(p,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${f2(p.gp?p.pts/p.gp:null)}</td><td>${p.pim}</td></tr>`,q?0:50);
+}
+
+/* ---------- player drawer ---------- */
+function openPlayer(key){
+  const [name,team]=key.split('|'),p=D.players.find(x=>x.name===name&&x.team===team);if(!p)return;
+  const c=at[name];
+  const log=weeks.map(w=>{const r=p.weekly[w-1];const gm=gamesOf(w).find(g=>g.home===team||g.away===team);
+    if(!r||!gm)return'';const pl=r[4];
+    return `<tr><td class="l">Wk ${w}</td><td class="l">${gm&&gm.home===team?'vs. '+esc(tn(gm.away)):gm?'at '+esc(tn(gm.home)):''}</td>${pl?`<td>${r[0]}</td><td>${r[1]}</td><td class="pts">${r[3]}</td><td>${r[2]}</td>`:`<td colspan="4" class="sub">${played(gm)?'Did not play':'Upcoming'}</td>`}</tr>`}).join('');
+  $('#sheet').innerHTML=`<button class="x" type="button" id="close">Close</button>
+  <div><div class="sub">${teamLink(team)}</div><h2>${esc(name)}</h2></div>
+  <div class="stat"><div><b>${p.gp}</b><small>GP</small></div><div><b>${p.g}</b><small>Goals</small></div><div><b>${p.a}</b><small>Assists</small></div><div><b>${p.pts}</b><small>Points</small></div><div><b>${p.pim}</b><small>PIM</small></div></div>
+  <section class="panel"><h3>Game log</h3><div class="tw"><table><thead><tr><th class="l">Wk</th><th class="l">Opp</th><th>G</th><th>A</th><th>Pts</th><th>PIM</th></tr></thead><tbody>${log}</tbody></table></div></section>
+  ${c?`<section class="panel"><h3>Career</h3><div class="stat"><div><b>${c.gp}</b><small>GP</small></div><div><b>${c.g}</b><small>Goals</small></div><div><b>${c.a}</b><small>Assists</small></div><div><b>${c.pts}</b><small>Points</small></div></div><div class="sub">${f2(c.pts/c.gp)} points per game across ${c.gp} games (archive through last season).</div></section>`:''}`;
+  $('#drawer').hidden=false;$('#close').focus();
+}
+function closeDrawer(){$('#drawer').hidden=true}
+
+/* ---------- router ---------- */
+const NAV=[['home','Home'],['schedule','Schedule'],['standings','Standings'],['players','Players'],['teams','Teams'],['alltime','All-time']];
+function sessionStorageGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function sessionStorageSet(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+function route(){
+  let h=(location.hash||'#home').slice(1),page=h,arg;
+  if(h.startsWith('team-')){page='team';arg=unslug(h.slice(5));if(!arg){page='teams'}}
+  if(!pages[page])page='home';
+  const cur=page==='team'?'teams':page;
+  $('#nav').innerHTML=NAV.map(([k,n])=>`<a href="#${k}" ${k===cur?'aria-current="page"':''}>${n}</a>`).join('');
+  $('#app').innerHTML=pages[page](arg);
+  closeDrawer();
+  if(page==='players'){renderPlayers();
+    $('#q').oninput=e=>{view.q=e.target.value;renderPlayers()};
+    $('#tf').onchange=e=>{view.team=e.target.value;renderPlayers()};
+    document.querySelectorAll('[data-pos]').forEach(b=>b.onclick=()=>{view.pos=b.dataset.pos;route()});}
+  if(page==='alltime'){renderAlltime();$('#q').oninput=e=>{view.q=e.target.value;renderAlltime()}}
+  if(page==='schedule')$('#tsel').onchange=e=>{sessionStorageSet('sched',e.target.value);route()};
+  document.title=({home:'Leonardtown Roller Hockey'}[page])||`${NAV.find(n=>n[0]===cur)[1]} · Leonardtown Roller Hockey`;
+  window.scrollTo(0,0);
+}
+document.addEventListener('click',e=>{
+  const r=e.target.closest('[data-go]');if(r&&!e.target.closest('a')){location.hash=r.dataset.go;return}
+  const l=e.target.closest('.leader[data-player]');if(l)openPlayer(l.dataset.player);
+  if(e.target.id==='drawer'||e.target.id==='close')closeDrawer();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeDrawer();
+  if(e.key==='Enter'){const r=e.target.closest('tr[data-go]');if(r)location.hash=r.dataset.go}
+});
+$('#theme').onclick=()=>{const r=document.documentElement,dark=matchMedia('(prefers-color-scheme: dark)').matches;
+  const cur=r.dataset.theme||(dark?'dark':'light');r.dataset.theme=cur==='dark'?'light':'dark'};
+$('#asof').textContent='Stats through '+(()=>{const d=new Date(D.asof+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})})()+' · data from the league spreadsheet';
+addEventListener('hashchange',route);route();
+</script>

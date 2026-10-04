@@ -108,12 +108,36 @@ input[type=search]{flex:1 1 180px}
 .theme{all:unset;cursor:pointer;font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .theme:hover{color:var(--ink)}
 .empty{color:var(--muted);padding:16px;text-align:center}
-@media (max-width:560px){
-  .game{grid-template-columns:56px 1fr}.refs{grid-column:2;text-align:left;max-width:none}
-  th,td{padding:8px}
-  .brand h1{font-size:24px}
+.sm{display:none;font-size:12px;font-weight:400;color:var(--muted);margin-top:1px}
+@media (max-width:640px){
+  .gdbar{display:none}
+  nav a.hm{display:none}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  header{padding-top:10px}
+  .brand h1{font-size:22px}.brand span{display:none}
+  nav{position:fixed;left:0;right:0;bottom:0;top:auto;max-width:none;margin:0;padding:0 0 env(safe-area-inset-bottom,0px);background:var(--surface);border-top:2px solid var(--ink);gap:0;overflow:visible;z-index:6}
+  nav a{flex:1 1 0;min-width:0;text-align:center;padding:12px 2px 11px;font-size:12.5px;letter-spacing:0;overflow:hidden;text-overflow:clip;border-bottom:0;border-top:4px solid transparent;margin:-2px 0 0}
+  nav a[aria-current="page"]{border-top-color:var(--accent);background:var(--row)}
+  main{padding-top:16px;gap:20px}
+  h2{font-size:24px}
+  .hm{display:none}
+  .sm{display:block}
+  th,td{padding:11px 6px}td.tm,td.l{white-space:normal}
+  td.rk,th:first-child{padding-left:12px}
+  .panel{padding:12px}
+  .game{grid-template-columns:62px 1fr;gap:10px}.refs{grid-column:2;text-align:left;max-width:none}
+  .side .s{font-size:24px}
+  .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:14px 10px}
+  .stat b{font-size:30px}
+  .cards{grid-template-columns:1fr 1fr;gap:10px}.card{padding:12px}.card .nm{font-size:21px}
+  .controls select,.controls input[type=search]{flex:1 1 100%;font-size:16px;padding:11px 12px}
+  .seg{width:100%}.seg button{flex:1;padding:11px 14px}
+  .pagehead .controls{width:100%}
+  .drawer{align-items:flex-end}
+  .sheet{width:100%;height:auto;max-height:88%;border-left:0;border-top:2px solid var(--ink);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  .foot{padding-bottom:8px}
 }
-@media (prefers-reduced-motion:no-preference){.sheet{animation:sl .18s ease-out}@keyframes sl{from{transform:translateX(24px);opacity:0}}}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:sl .18s ease-out}@keyframes sl{from{transform:translateX(24px);opacity:0}}@media (max-width:640px){.sheet{animation:up .2s ease-out}@keyframes up{from{transform:translateY(24px);opacity:0}}}}
 </style>
 
 <div class="wrap">
@@ -182,11 +206,11 @@ function weekBlock(w,opts={}){
 }
 function standTable(rows,compact){
   const max=Math.max(1,...ST.map(s=>Math.abs(s.gd)));
-  return `<div class="tw"><table><thead><tr><th>#</th><th class="l">Team</th><th>GP</th><th>W</th><th>L</th><th>T/OTL</th>${compact?'':'<th>GF</th><th>GA</th>'}<th>GD</th>${compact?'':'<th>Win %</th><th>Form</th>'}<th>Pts</th></tr></thead><tbody>
-  ${rows.map(s=>`<tr class="click" tabindex="0" data-go="team-${slug(s.t)}"><td class="rk">${s.rank}</td><td class="l tm">${esc(tn(s.t))}</td><td>${s.gp}</td><td>${s.w}</td><td>${s.l}</td><td>${s.tie}</td>
-  ${compact?'':`<td>${s.gf}</td><td>${s.ga}</td>`}
+  return `<div class="tw"><table><thead><tr><th>#</th><th class="l">Team</th><th class="hm">GP</th><th>W</th><th>L</th><th>T/OTL</th>${compact?'':'<th class="hm">GF</th><th class="hm">GA</th>'}<th>GD</th>${compact?'':'<th class="hm">Win %</th><th class="hm">Form</th>'}<th>Pts</th></tr></thead><tbody>
+  ${rows.map(s=>`<tr class="click" tabindex="0" data-go="team-${slug(s.t)}"><td class="rk">${s.rank}</td><td class="l tm">${esc(tn(s.t))}</td><td class="hm">${s.gp}</td><td>${s.w}</td><td>${s.l}</td><td>${s.tie}</td>
+  ${compact?'':`<td class="hm">${s.gf}</td><td class="hm">${s.ga}</td>`}
   <td><div class="gd"><span class="${s.gd>0?'pos':s.gd<0?'neg':''}">${s.gd>0?'+':''}${s.gd}</span>${compact?'':`<span class="gdbar"><i style="${s.gd>=0?'left:50%':'right:50%'};width:${Math.abs(s.gd)/max*50}%;background:${s.gd>=0?'var(--win)':'var(--loss)'}"></i></span>`}</div></td>
-  ${compact?'':`<td>${s.pct==null?'–':s.pct.toFixed(3).replace(/^0/,'')}</td><td><span class="form">${s.form.map(r=>`<i class="${r}">${r}</i>`).join('')||'–'}</span></td>`}
+  ${compact?'':`<td class="hm">${s.pct==null?'–':s.pct.toFixed(3).replace(/^0/,'')}</td><td class="hm"><span class="form">${s.form.map(r=>`<i class="${r}">${r}</i>`).join('')||'–'}</span></td>`}
   <td class="pts">${s.pts}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function leaders(key,label,n=5){
@@ -230,7 +254,7 @@ const pages={
   <div class="sub">GP games played &middot; T/OTL ties and overtime losses &middot; GF/GA goals for/against &middot; GD goal differential</div>`;
  },
  players(){
-  return `<div class="pagehead"><div><h2>Player stats</h2><div class="sub">Season totals. Click a player for the game log and career line.</div></div>
+  return `<div class="pagehead"><div><h2>Player stats</h2><div class="sub">Season totals. Click a player for the game log and career line. <a class="link" href="#alltime">All-time leaders</a></div></div>
   <div class="seg" role="group" aria-label="Position"><button type="button" data-pos="skaters" aria-pressed="${view.pos==='skaters'}">Skaters</button><button type="button" data-pos="goalies" aria-pressed="${view.pos==='goalies'}">Goalies</button></div></div>
   <div class="controls"><input type="search" id="q" placeholder="Search players" value="${esc(view.q)}" aria-label="Search players"><select id="tf" aria-label="Team"><option value="all">All teams</option>${TEAMS.map(t=>`<option value="${t}" ${t===view.team?'selected':''}>${esc(tn(t))}</option>`).join('')}</select></div>
   <div id="ptable"></div>`;
@@ -249,14 +273,14 @@ const pages={
   const byes=Object.entries(D.byes).filter(([w,b])=>b===t).map(([w])=>`<div class="bye">Bye in Week ${w}</div>`).join('');
   return `<div class="pagehead"><div><div class="sub"><a class="link" href="#teams">&larr; All teams</a></div><h2>${esc(tn(t))} Team</h2></div></div>
   <div class="stat"><div><b>${s.rank}</b><small>Rank</small></div><div><b>${s.w}-${s.l}${s.tie?'-'+s.tie:''}</b><small>Record</small></div><div><b>${s.pts}</b><small>Points</small></div><div><b>${s.gf}</b><small>Goals for</small></div><div><b>${s.ga}</b><small>Goals against</small></div></div>
-  <div class="grid"><section class="panel"><h3>Roster</h3><div class="tw"><table><thead><tr><th class="l">Player</th><th>GP</th><th>G</th><th>A</th><th>Pts</th><th>PIM</th></tr></thead><tbody>
-  ${roster.map(p=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="l">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${p.pim}</td></tr>`).join('')}
+  <div class="grid"><section class="panel"><h3>Roster</h3><div class="tw"><table><thead><tr><th class="l">Player</th><th>GP</th><th>G</th><th>A</th><th>Pts</th><th class="hm">PIM</th></tr></thead><tbody>
+  ${roster.map(p=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="l">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td class="hm">${p.pim}</td></tr>`).join('')}
   ${gl.map(g=>`<tr><td class="l">${esc(g.name)} <span class="jersey">G</span></td><td>${g.gp}</td><td colspan="2" class="sub">${g.w}-${g.l}${g.t?'-'+g.t:''}</td><td colspan="2" class="sub">${g.gp?(g.ga/g.gp).toFixed(2)+' GAA':'–'}</td></tr>`).join('')}
   </tbody></table></div></section>
   <section class="panel"><h3>Schedule &amp; results</h3>${mine}${byes}</section></div>`;
  },
  alltime(){
-  return `<div class="pagehead"><div><h2>All-time stats</h2><div class="sub">Career totals across every season in the league archive (${D.alltime.length} players).</div></div></div>
+  return `<div class="pagehead"><div><h2>All-time stats</h2><div class="sub"><a class="link" href="#players">&larr; This season</a></div><div class="sub">Career totals across every season in the league archive (${D.alltime.length} players).</div></div></div>
   <div class="controls"><input type="search" id="q" placeholder="Search players" value="${esc(view.q)}" aria-label="Search all-time players"></div><div id="atable"></div>`;
  }
 };
@@ -270,7 +294,7 @@ function sortable(id,cols,rows,key,rowFn,limit){
     if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
     return (typeof x==='string'?x.localeCompare(y):x-y)*dir||(b.pts||0)-(a.pts||0)||String(a.name).localeCompare(b.name)});
   const shown=limit?sorted.slice(0,limit):sorted;
-  $(id).innerHTML=rows.length?`<div class="tw"><table><thead><tr><th>#</th>${cols.map(c=>`<th class="${c.l?'l':''}" ${c.k===k?`aria-sort="${dir>0?'ascending':'descending'}"`:''}><button type="button" data-sort="${c.k}">${c.n}${c.k===k?(dir>0?' ▲':' ▼'):''}</button></th>`).join('')}</tr></thead><tbody>
+  $(id).innerHTML=rows.length?`<div class="tw"><table><thead><tr><th>#</th>${cols.map(c=>`<th class="${c.l?'l':''} ${c.hm?'hm':''}" ${c.k===k?`aria-sort="${dir>0?'ascending':'descending'}"`:''}><button type="button" data-sort="${c.k}">${c.n}${c.k===k?(dir>0?' ▲':' ▼'):''}</button></th>`).join('')}</tr></thead><tbody>
   ${shown.map((r,i)=>rowFn(r,i+1)).join('')}</tbody></table></div>${limit&&sorted.length>limit?`<div class="sub">Showing top ${limit} of ${sorted.length}. Search to find anyone.</div>`:''}`:`<div class="empty">No players match.</div>`;
   $(id).onclick=e=>{const b=e.target.closest('[data-sort]');if(b){const nk=b.dataset.sort,cur=view.sort[key];
       view.sort[key]=[nk,cur[0]===nk?-cur[1]:(cols.find(c=>c.k===nk).l||nk==='gaa'||nk==='ga'||nk==='l'?1:-1)];sortable(id,cols,rows,key,rowFn,limit);return}
@@ -281,19 +305,19 @@ function renderPlayers(){
   const q=view.q.toLowerCase();
   if(view.pos==='skaters'){
     const rows=D.players.filter(p=>(view.team==='all'||p.team===view.team)&&p.name.toLowerCase().includes(q));
-    const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'team',n:'Team',l:1,v:p=>p.team},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',v:ppg},{k:'pim',n:'PIM',v:p=>p.pim}];
-    sortable('#ptable',cols,rows,'players',(p,i)=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="rk">${i}</td><td class="l tm">${esc(p.name)}</td><td class="l">${esc(tn(p.team))}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${f2(ppg(p))}</td><td>${p.pim}</td></tr>`);
+    const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'team',n:'Team',l:1,hm:1,v:p=>p.team},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',hm:1,v:ppg},{k:'pim',n:'PIM',hm:1,v:p=>p.pim}];
+    sortable('#ptable',cols,rows,'players',(p,i)=>`<tr class="click" tabindex="0" data-player="${esc(p.name)}|${esc(p.team)}"><td class="rk">${i}</td><td class="l tm">${esc(p.name)}<span class="sm">${esc(tn(p.team))}</span></td><td class="l hm">${esc(tn(p.team))}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td class="hm">${f2(ppg(p))}</td><td class="hm">${p.pim}</td></tr>`);
   }else{
     const rows=D.goalies.filter(g=>(view.team==='all'||g.team===view.team)&&g.name.toLowerCase().includes(q)).map(g=>({...g,gaa:g.gp?g.ga/g.gp:null,pct:g.gp?g.w/g.gp:null}));
-    const cols=[{k:'name',n:'Goalie',l:1,v:g=>g.name},{k:'team',n:'Team',l:1,v:g=>g.team},{k:'gp',n:'GP',v:g=>g.gp},{k:'w',n:'W',v:g=>g.w},{k:'l',n:'L',v:g=>g.l},{k:'t',n:'T/OTL',v:g=>g.t},{k:'ga',n:'GA',v:g=>g.ga},{k:'gaa',n:'GAA',v:g=>g.gaa}];
-    sortable('#ptable',cols,rows,'goalies',(g,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(g.name)}</td><td class="l">${esc(tn(g.team))}</td><td>${g.gp}</td><td>${g.w}</td><td>${g.l}</td><td>${g.t}</td><td>${g.ga}</td><td class="pts">${f2(g.gaa)}</td></tr>`);
+    const cols=[{k:'name',n:'Goalie',l:1,v:g=>g.name},{k:'team',n:'Team',l:1,hm:1,v:g=>g.team},{k:'gp',n:'GP',v:g=>g.gp},{k:'w',n:'W',v:g=>g.w},{k:'l',n:'L',v:g=>g.l},{k:'t',n:'T/OTL',hm:1,v:g=>g.t},{k:'ga',n:'GA',hm:1,v:g=>g.ga},{k:'gaa',n:'GAA',v:g=>g.gaa}];
+    sortable('#ptable',cols,rows,'goalies',(g,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(g.name)}<span class="sm">${esc(tn(g.team))}</span></td><td class="l hm">${esc(tn(g.team))}</td><td>${g.gp}</td><td>${g.w}</td><td>${g.l}</td><td class="hm">${g.t}</td><td class="hm">${g.ga}</td><td class="pts">${f2(g.gaa)}</td></tr>`);
     $('#ptable').insertAdjacentHTML('beforeend','<div class="sub" style="margin-top:8px">Empty-net goals do not count against a goalie’s GAA.</div>');
   }
 }
 function renderAlltime(){
   const q=view.q.toLowerCase(),rows=D.alltime.filter(p=>p.name.toLowerCase().includes(q));
-  const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',v:p=>p.gp?p.pts/p.gp:null},{k:'pim',n:'PIM',v:p=>p.pim}];
-  sortable('#atable',cols,rows,'alltime',(p,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td>${f2(p.gp?p.pts/p.gp:null)}</td><td>${p.pim}</td></tr>`,q?0:50);
+  const cols=[{k:'name',n:'Player',l:1,v:p=>p.name},{k:'gp',n:'GP',v:p=>p.gp},{k:'g',n:'G',v:p=>p.g},{k:'a',n:'A',v:p=>p.a},{k:'pts',n:'Pts',v:p=>p.pts},{k:'ppg',n:'Pts/G',hm:1,v:p=>p.gp?p.pts/p.gp:null},{k:'pim',n:'PIM',hm:1,v:p=>p.pim}];
+  sortable('#atable',cols,rows,'alltime',(p,i)=>`<tr><td class="rk">${i}</td><td class="l tm">${esc(p.name)}</td><td>${p.gp}</td><td>${p.g}</td><td>${p.a}</td><td class="pts">${p.pts}</td><td class="hm">${f2(p.gp?p.pts/p.gp:null)}</td><td class="hm">${p.pim}</td></tr>`,q?0:50);
 }
 
 /* ---------- player drawer ---------- */
@@ -321,7 +345,7 @@ function route(){
   if(h.startsWith('team-')){page='team';arg=unslug(h.slice(5));if(!arg){page='teams'}}
   if(!pages[page])page='home';
   const cur=page==='team'?'teams':page;
-  $('#nav').innerHTML=NAV.map(([k,n])=>`<a href="#${k}" ${k===cur?'aria-current="page"':''}>${n}</a>`).join('');
+  $('#nav').innerHTML=NAV.map(([k,n])=>`<a href="#${k}" class="${k==='alltime'?'hm':''}" ${k===cur?'aria-current="page"':''}>${n}</a>`).join('');
   $('#app').innerHTML=pages[page](arg);
   closeDrawer();
   if(page==='players'){renderPlayers();
